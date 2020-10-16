@@ -26,19 +26,21 @@ def podcasts_as_opml(connection: sqlite3.Connection) -> str:
 
     body = ET.SubElement(root, "body")
     for p in podcasts(connection):
-        print(p["ZTITLE"], p["ZFEEDURL"], p["ZWEBPAGEURL"])
+        title = p["ZTITLE"]
+        xml_url = p["ZFEEDURL"]
+        html_url = p["ZWEBPAGEURL"]
         ET.SubElement(
             body,
             "outline",
             {
                 "type": "rss",
-                "text": p["ZTITLE"],
-                "xmlUrl": p["ZFEEDURL"],
-                "htmlUrl": p["ZWEBPAGEURL"],
+                "text": title if title is not None else "",
+                "xmlUrl": xml_url if xml_url is not None else "",
+                "htmlUrl": html_url if html_url is not None else "",
             },
         )
 
-    dom = minidom.parseString(ET.tostring(root, encoding="utf-8"))
+    dom = minidom.parseString(ET.tostring(root, encoding="utf-8", method="xml"))
     return cast(str, dom.toprettyxml())
 
 
