@@ -51,7 +51,6 @@ def main() -> None:
     if db_file is None:
         raise SystemExit(f"Unable to find database file {DB_FILE!r}.")
     try:
-        print(f"Database file: {db_file}")
         connection = sqlite3.connect(db_file.as_posix())
     except OSError as e:
         raise SystemExit(f"Unable to open database file {db_file!r}: {e}")
