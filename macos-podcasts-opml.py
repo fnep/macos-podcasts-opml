@@ -26,10 +26,11 @@ def podcasts_as_opml(connection: sqlite3.Connection) -> str:
 
     body = ET.SubElement(root, "body")
     for p in podcasts(connection):
+        print(p["ZTITLE"], p["ZFEEDURL"], p["ZWEBPAGEURL"])
         ET.SubElement(
             body,
             "outline",
-            attrib={
+            {
                 "type": "rss",
                 "text": p["ZTITLE"],
                 "xmlUrl": p["ZFEEDURL"],
@@ -37,7 +38,7 @@ def podcasts_as_opml(connection: sqlite3.Connection) -> str:
             },
         )
 
-    dom = minidom.parseString(ET.tostring(root, encoding="utf-8", method="xml"))
+    dom = minidom.parseString(ET.tostring(root, encoding="utf-8"))
     return cast(str, dom.toprettyxml())
 
 
@@ -48,6 +49,7 @@ def main() -> None:
     if db_file is None:
         raise SystemExit(f"Unable to find database file {DB_FILE!r}.")
     try:
+        print(f"Database file: {db_file}")
         connection = sqlite3.connect(db_file.as_posix())
     except OSError as e:
         raise SystemExit(f"Unable to open database file {db_file!r}: {e}")
